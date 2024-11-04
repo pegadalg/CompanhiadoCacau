@@ -13,10 +13,12 @@ namespace CompanhiadoCacau.Controllers
     public class EnderecoController : Controller
     {
         private readonly CiadoCacauContext _context;
+        private readonly HttpClient _httpClient;
 
-        public EnderecoController(CiadoCacauContext context)
+        public EnderecoController(CiadoCacauContext context, HttpClient httpClient)
         {
             _context = context;
+            _httpClient = httpClient;
         }
 
         // GET: Endereco
@@ -44,14 +46,31 @@ namespace CompanhiadoCacau.Controllers
         }
 
         // GET: Endereco/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(string cep)
         {
-            return View();
+            var endereco = new Endereco();
+            if (!string.IsNullOrEmpty(cep))
+            {
+                // Chama a API ViaCep
+                var enderecoApi = await _httpClient.GetFromJsonAsync<ViaCepResponse>($"https://viacep.com.br/ws/{cep}/json/");
+
+                if (enderecoApi != null && enderecoApi.Logradouro != null)
+                {
+                    endereco.CEP = enderecoApi.CEP;
+                    endereco.Logradouro = enderecoApi.Logradouro;
+                    endereco.Complemento = enderecoApi.Complemento;
+                    endereco.Bairro = enderecoApi.Bairro;
+                    endereco.Localidade = enderecoApi.Localidade;
+                    endereco.UF = enderecoApi.UF;
+                }
+            }
+
+            return View(endereco);
         }
 
+
+
         // POST: Endereco/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdEndereco,CEP,Logradouro,Complemento,Bairro,Localidade,UF,Numero")] Endereco endereco)
@@ -64,6 +83,54 @@ namespace CompanhiadoCacau.Controllers
             }
             return View(endereco);
         }
+
+        // Método para buscar endereço pelo CEP
+        [HttpPost]
+        public async Task<IActionResult> BuscarEnderecoPorCep(string cep)
+        {
+            if (string.IsNullOrEmpty(cep))
+            {
+                return BadRequest("CEP não pode ser vazio.");
+            }
+
+            // Remove caracteres não numéricos
+            cep = cep.Replace("-", "").Trim();
+
+            // Chama a API ViaCep
+            var enderecoApi = await _httpClient.GetFromJsonAsync<ViaCepResponse>($"https://viacep.com.br/ws/{cep}/json/");
+
+            if (enderecoApi == null || enderecoApi.Logradouro == null)
+            {
+                return NotFound("Endereço não encontrado.");
+            }
+
+            // Mapeia os dados recebidos para o modelo Endereco
+            var endereco = new Endereco
+            {
+                CEP = enderecoApi.CEP,
+                Logradouro = enderecoApi.Logradouro,
+                Complemento = enderecoApi.Complemento,
+                Bairro = enderecoApi.Bairro,
+                Localidade = enderecoApi.Localidade,
+                UF = enderecoApi.UF
+                // Não vamos preencher o número porque isso deve ser feito pelo usuário
+            };
+
+            return Json(endereco); // Retorna o endereço como JSON
+        }
+
+        // Classe para mapear a resposta da API ViaCep
+        public class ViaCepResponse
+        {
+            public string CEP { get; set; }
+            public string Logradouro { get; set; }
+            public string Complemento { get; set; }
+            public string Bairro { get; set; }
+            public string Localidade { get; set; }
+            public string UF { get; set; }
+            
+        }
+
 
         // GET: Endereco/Edit/5
         public async Task<IActionResult> Edit(int? id)

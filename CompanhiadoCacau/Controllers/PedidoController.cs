@@ -22,7 +22,7 @@ namespace CompanhiadoCacau.Controllers
         // GET: Pedido
         public async Task<IActionResult> Index()
         {
-            var ciadoCacauContext = _context.Pedidos.Include(p => p.EnderecoEntrega);
+            var ciadoCacauContext = _context.Pedidos.Include(p => p.Cliente);
             return View(await ciadoCacauContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace CompanhiadoCacau.Controllers
             }
 
             var pedido = await _context.Pedidos
-                .Include(p => p.EnderecoEntrega)
+                .Include(p => p.Cliente)
                 .FirstOrDefaultAsync(m => m.PedidoId == id);
             if (pedido == null)
             {
@@ -48,7 +48,7 @@ namespace CompanhiadoCacau.Controllers
         // GET: Pedido/Create
         public IActionResult Create()
         {
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "IdEndereco");
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF");
             return View();
         }
 
@@ -57,7 +57,7 @@ namespace CompanhiadoCacau.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PedidoId,ValorTotal,Status,EnderecoId")] Pedido pedido)
+        public async Task<IActionResult> Create([Bind("PedidoId,IdCliente,ValorTotal,Status")] Pedido pedido)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +65,7 @@ namespace CompanhiadoCacau.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "IdEndereco", pedido.EnderecoId);
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF", pedido.IdCliente);
             return View(pedido);
         }
 
@@ -82,7 +82,7 @@ namespace CompanhiadoCacau.Controllers
             {
                 return NotFound();
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "IdEndereco", pedido.EnderecoId);
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF", pedido.IdCliente);
             return View(pedido);
         }
 
@@ -91,7 +91,7 @@ namespace CompanhiadoCacau.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PedidoId,ValorTotal,Status,EnderecoId")] Pedido pedido)
+        public async Task<IActionResult> Edit(int id, [Bind("PedidoId,IdCliente,ValorTotal,Status")] Pedido pedido)
         {
             if (id != pedido.PedidoId)
             {
@@ -118,7 +118,7 @@ namespace CompanhiadoCacau.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "IdEndereco", pedido.EnderecoId);
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF", pedido.IdCliente);
             return View(pedido);
         }
 
@@ -131,7 +131,7 @@ namespace CompanhiadoCacau.Controllers
             }
 
             var pedido = await _context.Pedidos
-                .Include(p => p.EnderecoEntrega)
+                .Include(p => p.Cliente)
                 .FirstOrDefaultAsync(m => m.PedidoId == id);
             if (pedido == null)
             {

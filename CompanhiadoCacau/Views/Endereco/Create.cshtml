@@ -11,16 +11,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="get">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="CEP" class="control-label"></label>
                 <input asp-for="CEP" class="form-control" />
                 <span asp-validation-for="CEP" class="text-danger"></span>
+                <input type="submit" value="Buscar Endereço" class="btn btn-secondary" />
             </div>
             <div class="form-group">
                 <label asp-for="Logradouro" class="control-label"></label>
-                <input asp-for="Logradouro" class="form-control" />
+                <input asp-for="Logradouro" class="form-control" readonly />
                 <span asp-validation-for="Logradouro" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -30,17 +32,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Bairro" class="control-label"></label>
-                <input asp-for="Bairro" class="form-control" />
+                <input asp-for="Bairro" class="form-control" readonly />
                 <span asp-validation-for="Bairro" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Localidade" class="control-label"></label>
-                <input asp-for="Localidade" class="form-control" />
+                <input asp-for="Localidade" class="form-control" readonly />
                 <span asp-validation-for="Localidade" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="UF" class="control-label"></label>
-                <input asp-for="UF" class="form-control" />
+                <input asp-for="UF" class="form-control" readonly />
                 <span asp-validation-for="UF" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -58,7 +60,3 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

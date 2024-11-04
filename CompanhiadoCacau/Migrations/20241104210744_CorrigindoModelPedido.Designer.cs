@@ -4,6 +4,7 @@ using CompanhiadoCacau.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CompanhiadoCacau.Migrations
 {
     [DbContext(typeof(CiadoCacauContext))]
-    partial class CiadoCacauContextModelSnapshot : ModelSnapshot
+    [Migration("20241104210744_CorrigindoModelPedido")]
+    partial class CorrigindoModelPedido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,6 +112,9 @@ namespace CompanhiadoCacau.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PedidoId"));
 
+                    b.Property<int>("EnderecoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdCliente")
                         .HasColumnType("int");
 
@@ -119,6 +125,9 @@ namespace CompanhiadoCacau.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("PedidoId");
+
+                    b.HasIndex("EnderecoId")
+                        .IsUnique();
 
                     b.HasIndex("IdCliente");
 
@@ -186,6 +195,12 @@ namespace CompanhiadoCacau.Migrations
 
             modelBuilder.Entity("CompanhiadoCacau.Models.Pedido", b =>
                 {
+                    b.HasOne("CompanhiadoCacau.Models.Endereco", "EnderecoEntrega")
+                        .WithOne()
+                        .HasForeignKey("CompanhiadoCacau.Models.Pedido", "EnderecoId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("CompanhiadoCacau.Models.Cliente", "Cliente")
                         .WithMany("PedidosCliente")
                         .HasForeignKey("IdCliente")
@@ -193,6 +208,8 @@ namespace CompanhiadoCacau.Migrations
                         .IsRequired();
 
                     b.Navigation("Cliente");
+
+                    b.Navigation("EnderecoEntrega");
                 });
 
             modelBuilder.Entity("CompanhiadoCacau.Models.PedidoProduto", b =>

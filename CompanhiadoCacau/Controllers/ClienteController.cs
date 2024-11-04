@@ -59,6 +59,8 @@ namespace CompanhiadoCacau.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ClienteId,Nome,DataNascimento,CPF,Email,Telefone,EnderecoId")] Cliente cliente)
         {
+            
+
             if (ModelState.IsValid)
             {
                 _context.Add(cliente);

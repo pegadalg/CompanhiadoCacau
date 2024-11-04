@@ -40,12 +40,7 @@ namespace CompanhiadoCacau.Data
                 .HasOne(p => p.Cliente)
                 .WithMany(c => c.PedidosCliente)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Relacionamento entre Pedido e EnderecoEntrega com DeleteBehavior.NoAction
-            modelBuilder.Entity<Pedido>()
-                .HasOne(p => p.EnderecoEntrega)
-                .WithOne() // Não há uma coleção de pedidos no endereço
-                .OnDelete(DeleteBehavior.NoAction);
+     
         }
     }
 }
