@@ -50,6 +50,17 @@
                 <input asp-for="Numero" class="form-control" />
                 <span asp-validation-for="Numero" class="text-danger"></span>
             </div>
+
+        </form>
+
+        <!-- Formulário para criar o endereço -->
+        <form asp-action="Create" method="post">
+            <input type="hidden" asp-for="IdEndereco" />
+            <input type="hidden" asp-for="CEP" />
+            <input type="hidden" asp-for="Logradouro" />
+            <input type="hidden" asp-for="Bairro" />
+            <input type="hidden" asp-for="Localidade" />
+            <input type="hidden" asp-for="UF" />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

@@ -16,7 +16,7 @@ namespace CompanhiadoCacau.Models
         [Required(ErrorMessage = "O logradouro é obrigatório.")]
         public string Logradouro { get; set; }
 
-        public string Complemento { get; set; }
+        public string? Complemento { get; set; }
 
         [Required(ErrorMessage = "O bairro é obrigatório.")]
         public string Bairro { get; set; }

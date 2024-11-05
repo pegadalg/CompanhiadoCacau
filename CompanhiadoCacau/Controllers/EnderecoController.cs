@@ -20,6 +20,52 @@ namespace CompanhiadoCacau.Controllers
             _context = context;
             _httpClient = httpClient;
         }
+        // Método para buscar endereço pelo CEP
+        [HttpPost]
+        public async Task<IActionResult> BuscarEnderecoPorCep(string cep)
+        {
+            if (string.IsNullOrEmpty(cep))
+            {
+                return BadRequest("CEP não pode ser vazio.");
+            }
+
+            // Remove caracteres não numéricos
+            cep = cep.Replace("-", "").Trim();
+
+            // Chama a API ViaCep
+            var enderecoApi = await _httpClient.GetFromJsonAsync<ViaCepResponse>($"https://viacep.com.br/ws/{cep}/json/");
+
+            if (enderecoApi == null || enderecoApi.Logradouro == null)
+            {
+                return NotFound("Endereço não encontrado.");
+            }
+
+            // Mapeia os dados recebidos para o modelo Endereco
+            var endereco = new Endereco
+            {
+                CEP = enderecoApi.CEP,
+                Logradouro = enderecoApi.Logradouro,
+                Complemento = enderecoApi.Complemento,
+                Bairro = enderecoApi.Bairro,
+                Localidade = enderecoApi.Localidade,
+                UF = enderecoApi.UF
+                // Não vamos preencher o número porque isso deve ser feito pelo usuário
+            };
+
+            return Json(endereco); // Retorna o endereço como JSON
+        }
+
+        // Classe para mapear a resposta da API ViaCep
+        public class ViaCepResponse
+        {
+            public string CEP { get; set; }
+            public string Logradouro { get; set; }
+            public string Complemento { get; set; }
+            public string Bairro { get; set; }
+            public string Localidade { get; set; }
+            public string UF { get; set; }
+
+        }
 
         // GET: Endereco
         public async Task<IActionResult> Index()
@@ -68,8 +114,6 @@ namespace CompanhiadoCacau.Controllers
             return View(endereco);
         }
 
-
-
         // POST: Endereco/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -77,6 +121,8 @@ namespace CompanhiadoCacau.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Aqui, verifique se o valor de endereco.Numero está correto
+                Console.WriteLine($"Número recebido: {endereco.Numero}");
                 _context.Add(endereco);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -84,52 +130,8 @@ namespace CompanhiadoCacau.Controllers
             return View(endereco);
         }
 
-        // Método para buscar endereço pelo CEP
-        [HttpPost]
-        public async Task<IActionResult> BuscarEnderecoPorCep(string cep)
-        {
-            if (string.IsNullOrEmpty(cep))
-            {
-                return BadRequest("CEP não pode ser vazio.");
-            }
 
-            // Remove caracteres não numéricos
-            cep = cep.Replace("-", "").Trim();
 
-            // Chama a API ViaCep
-            var enderecoApi = await _httpClient.GetFromJsonAsync<ViaCepResponse>($"https://viacep.com.br/ws/{cep}/json/");
-
-            if (enderecoApi == null || enderecoApi.Logradouro == null)
-            {
-                return NotFound("Endereço não encontrado.");
-            }
-
-            // Mapeia os dados recebidos para o modelo Endereco
-            var endereco = new Endereco
-            {
-                CEP = enderecoApi.CEP,
-                Logradouro = enderecoApi.Logradouro,
-                Complemento = enderecoApi.Complemento,
-                Bairro = enderecoApi.Bairro,
-                Localidade = enderecoApi.Localidade,
-                UF = enderecoApi.UF
-                // Não vamos preencher o número porque isso deve ser feito pelo usuário
-            };
-
-            return Json(endereco); // Retorna o endereço como JSON
-        }
-
-        // Classe para mapear a resposta da API ViaCep
-        public class ViaCepResponse
-        {
-            public string CEP { get; set; }
-            public string Logradouro { get; set; }
-            public string Complemento { get; set; }
-            public string Bairro { get; set; }
-            public string Localidade { get; set; }
-            public string UF { get; set; }
-            
-        }
 
 
         // GET: Endereco/Edit/5
