@@ -114,24 +114,25 @@ namespace CompanhiadoCacau.Controllers
             return View(endereco);
         }
 
-        // POST: Endereco/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdEndereco,CEP,Logradouro,Complemento,Bairro,Localidade,UF,Numero")] Endereco endereco)
         {
-            if (ModelState.IsValid)
+            // Exibe erros do ModelState para debugar se o ModelState não estiver válido
+            if (!ModelState.IsValid)
             {
-                // Aqui, verifique se o valor de endereco.Numero está correto
-                Console.WriteLine($"Número recebido: {endereco.Numero}");
-                _context.Add(endereco);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage); // Exibe o erro no console
+                }
+                return View(endereco);
             }
-            return View(endereco);
+
+           
+            _context.Add(endereco);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
-
-
-
 
 
         // GET: Endereco/Edit/5

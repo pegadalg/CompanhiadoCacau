@@ -45,11 +45,7 @@
                 <input asp-for="UF" class="form-control" readonly />
                 <span asp-validation-for="UF" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Numero" class="control-label"></label>
-                <input asp-for="Numero" class="form-control" />
-                <span asp-validation-for="Numero" class="text-danger"></span>
-            </div>
+            
 
         </form>
 
@@ -61,6 +57,9 @@
             <input type="hidden" asp-for="Bairro" />
             <input type="hidden" asp-for="Localidade" />
             <input type="hidden" asp-for="UF" />
+            <label asp-for="Numero" class="control-label"></label>
+            <input asp-for="Numero" class="form-control" />
+            <span asp-validation-for="Numero" class="text-danger"></span>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -71,3 +70,4 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
