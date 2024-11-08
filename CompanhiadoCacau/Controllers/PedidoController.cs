@@ -48,24 +48,56 @@ namespace CompanhiadoCacau.Controllers
         // GET: Pedido/Create
         public IActionResult Create()
         {
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF");
-            return View();
+            // Carregar lista de clientes e produtos
+            ViewBag.IdCliente = new SelectList(_context.Clientes, "ClienteId", "CPF");
+            ViewBag.Produtos = _context.Produtos.ToList();
+
+            // Criar um pedido novo
+            var pedido = new Pedido
+            {
+                PedidoProdutos = new List<PedidoProduto>()
+            };
+
+            return View(pedido);
         }
 
         // POST: Pedido/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PedidoId,IdCliente,ValorTotal,Status")] Pedido pedido)
+        public async Task<IActionResult> Create([Bind("PedidoId,IdCliente,ValorTotal,Status,PedidoProdutos")] Pedido pedido)
         {
             if (ModelState.IsValid)
             {
+                // Calcular o valor total do pedido com base nos produtos
+                decimal valorTotal = 0;
+                foreach (var pedidoProduto in pedido.PedidoProdutos)
+                {
+                    var produto = await _context.Produtos.FindAsync(pedidoProduto.ProdutoId);
+                    if (produto != null)
+                    {
+                        valorTotal += produto.Valor * pedidoProduto.Quantidade;
+                    }
+                }
+
+                pedido.ValorTotal = valorTotal;
+
+                // Adiciona o pedido no banco de dados
                 _context.Add(pedido);
+                await _context.SaveChangesAsync();
+
+                // Atualizar os produtos (PedidoProduto) do pedido
+                foreach (var pedidoProduto in pedido.PedidoProdutos)
+                {
+                    pedidoProduto.PedidoId = pedido.PedidoId;
+                    _context.Add(pedidoProduto);
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF", pedido.IdCliente);
+            ViewData["Produtos"] = new SelectList(_context.Produtos, "ProdutoId", "Nome");
             return View(pedido);
         }
 
@@ -77,21 +109,24 @@ namespace CompanhiadoCacau.Controllers
                 return NotFound();
             }
 
-            var pedido = await _context.Pedidos.FindAsync(id);
+            var pedido = await _context.Pedidos
+                .Include(p => p.PedidoProdutos) // Inclui os produtos do pedido
+                .ThenInclude(pp => pp.Produto) // Inclui as informações do produto
+                .FirstOrDefaultAsync(p => p.PedidoId == id);
+
             if (pedido == null)
             {
                 return NotFound();
             }
+
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF", pedido.IdCliente);
             return View(pedido);
         }
 
         // POST: Pedido/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PedidoId,IdCliente,ValorTotal,Status")] Pedido pedido)
+        public async Task<IActionResult> Edit(int id, [Bind("PedidoId,IdCliente,ValorTotal,Status,PedidoProdutos")] Pedido pedido)
         {
             if (id != pedido.PedidoId)
             {
@@ -103,6 +138,18 @@ namespace CompanhiadoCacau.Controllers
                 try
                 {
                     _context.Update(pedido);
+
+                    // Remove os produtos antigos
+                    var produtosExistentes = _context.PedidoProdutos.Where(pp => pp.PedidoId == id).ToList();
+                    _context.PedidoProdutos.RemoveRange(produtosExistentes);
+
+                    // Adiciona os produtos atualizados (com as quantidades modificadas)
+                    foreach (var pedidoProduto in pedido.PedidoProdutos)
+                    {
+                        pedidoProduto.PedidoId = pedido.PedidoId;
+                        _context.Add(pedidoProduto);
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -118,6 +165,7 @@ namespace CompanhiadoCacau.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF", pedido.IdCliente);
             return View(pedido);
         }
@@ -146,13 +194,20 @@ namespace CompanhiadoCacau.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var pedido = await _context.Pedidos.FindAsync(id);
+            var pedido = await _context.Pedidos
+                .Include(p => p.PedidoProdutos) // Carregar os produtos relacionados ao pedido
+                .FirstOrDefaultAsync(p => p.PedidoId == id);
+
             if (pedido != null)
             {
+                // Remover os produtos do pedido
+                _context.PedidoProdutos.RemoveRange(pedido.PedidoProdutos);
+
+                // Remover o pedido
                 _context.Pedidos.Remove(pedido);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

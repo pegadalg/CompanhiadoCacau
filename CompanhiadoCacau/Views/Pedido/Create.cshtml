@@ -11,22 +11,53 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="IdCliente" class="control-label"></label>
-                <select asp-for="IdCliente" class ="form-control" asp-items="ViewBag.IdCliente"></select>
+                <select asp-for="IdCliente" class="form-control" asp-items="ViewBag.IdCliente"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="ValorTotal" class="control-label"></label>
-                <input asp-for="ValorTotal" class="form-control" />
-                <span asp-validation-for="ValorTotal" class="text-danger"></span>
+
+            <div id="produtos">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Preço</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="produtoTableBody">
+                        @foreach (var pedidoProduto in Model.PedidoProdutos)
+{
+    <tr>
+        <td>
+            <select name="PedidoProdutos[@pedidoProduto.PedidoProdutoId].ProdutoId" class="form-control">
+                @foreach (var produto in ViewBag.Produtos as List<Produto>)
+                {
+                    <option value="@produto.ProdutoId" @(pedidoProduto.ProdutoId == produto.ProdutoId ? "selected" : "")>@produto.Nome</option>
+                }
+            </select>
+        </td>
+        <td>
+            <input name="PedidoProdutos[@pedidoProduto.PedidoProdutoId].Quantidade" class="form-control" value="@pedidoProduto.Quantidade" />
+        </td>
+        <td>
+            <!-- Calculando Preço dinamicamente no controller e passando como parte do modelo -->
+            <input name="PedidoProdutos[@pedidoProduto.PedidoProdutoId].Preco" class="form-control" readonly value="@pedidoProduto.Preco" />
+        </td>
+        <td>
+            <!-- Calculando Total dinamicamente no controller ou em JavaScript -->
+            <input name="PedidoProdutos[@pedidoProduto.PedidoProdutoId].Total" class="form-control" readonly value="@pedidoProduto.Total" />
+        </td>
+    </tr>
+}
+
+                    </tbody>
+                </table>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
-                </label>
-            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -37,7 +68,3 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

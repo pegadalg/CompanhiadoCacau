@@ -13,13 +13,13 @@ namespace CompanhiadoCacau.Models
         public int PedidoId { get; set; } 
 
         [ForeignKey("PedidoId")]
-        public Pedido? Pedido { get; set; } 
+        public Pedido Pedido { get; set; } 
 
         [Required]
         public int ProdutoId { get; set; } 
 
         [ForeignKey("ProdutoId")]
-        public Produto? Produto { get; set; } 
+        public Produto Produto { get; set; } 
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "A quantidade deve ser maior que zero.")]

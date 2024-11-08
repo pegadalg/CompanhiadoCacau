@@ -1,0 +1,48 @@
+﻿@model List<CompanhiadoCacau.Models.PedidoProduto>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Preço</th>
+            <th>Total</th>
+            <th>Remover</th>
+        </tr>
+    </thead>
+    <tbody id="produtoTableBody">
+        @foreach (var pedidoProduto in Model)
+        {
+            <tr>
+                <td>
+                    <select name="PedidoProdutos[@pedidoProduto.PedidoProdutoId].ProdutoId" class="form-control">
+                        @foreach (var produto in ViewBag.Produtos as List<Produto>)
+                        {
+                            <option value="@produto.ProdutoId"
+                                    selected="@((pedidoProduto.ProdutoId == produto.ProdutoId) ? "selected" : null)">
+                                @produto.Nome
+                            </option>
+                        }
+                    </select>
+
+
+                </td>
+                <td>
+                    <input type="number" name="PedidoProdutos[@pedidoProduto.PedidoProdutoId].Quantidade"
+                           value="@pedidoProduto.Quantidade" min="1" class="form-control" />
+                </td>
+                <td>
+                    <input type="text" name="PedidoProdutos[@pedidoProduto.PedidoProdutoId].Preco"
+                           value="@pedidoProduto.Produto.Valor" class="form-control" readonly />
+                </td>
+                <td>
+                    <input type="text" name="PedidoProdutos[@pedidoProduto.PedidoProdutoId].Total"
+                           value="@(pedidoProduto.Produto.Valor * pedidoProduto.Quantidade)" class="form-control" readonly />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="removeProduto(this)">Remover</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
