@@ -48,7 +48,7 @@ namespace CompanhiadoCacau.Controllers
         // GET: Cliente/Create
         public IActionResult Create()
         {
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "IdEndereco");
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro");
             return View();
         }
 
@@ -59,15 +59,13 @@ namespace CompanhiadoCacau.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ClienteId,Nome,DataNascimento,CPF,Email,Telefone,EnderecoId")] Cliente cliente)
         {
-            
-
             if (ModelState.IsValid)
             {
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "IdEndereco", cliente.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro", cliente.EnderecoId);
             return View(cliente);
         }
 
@@ -84,7 +82,7 @@ namespace CompanhiadoCacau.Controllers
             {
                 return NotFound();
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "IdEndereco", cliente.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro", cliente.EnderecoId);
             return View(cliente);
         }
 
@@ -120,7 +118,7 @@ namespace CompanhiadoCacau.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "IdEndereco", cliente.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro", cliente.EnderecoId);
             return View(cliente);
         }
 

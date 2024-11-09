@@ -1,6 +1,7 @@
 ﻿using CompanhiadoCacau.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace CompanhiadoCacau.Models
 {
@@ -16,15 +17,17 @@ namespace CompanhiadoCacau.Models
         public Cliente? Cliente { get; set; }
 
         [Required]
-        public StatusPedido Status { get; set; }  // Enum aqui
+        public StatusPedido Status { get; set; } = StatusPedido.Pendente;  // Enum aqui
 
-        public DateTime DataPedido { get; set; } = DateTime.UtcNow;
+        [DisplayName("Data do Pedido")]
+        public DateOnly DataPedido { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
         [Required]
         [MaxLength(100)]
+        [DisplayName("Responsável Atendimento")]
         public string ResponsavelAtendimento { get; set; }
 
-        public List<PedidoProduto> PedidoProdutos { get; set; } = new List<PedidoProduto>();
+        public List<PedidoProduto>? PedidoProdutos { get; set; } = new List<PedidoProduto>();
     }
 
     public enum StatusPedido

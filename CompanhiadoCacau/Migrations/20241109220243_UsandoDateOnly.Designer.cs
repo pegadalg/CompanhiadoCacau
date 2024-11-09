@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CompanhiadoCacau.Migrations
 {
     [DbContext(typeof(CiadoCacauContext))]
-    [Migration("20241104202628_Initial-Models")]
-    partial class InitialModels
+    [Migration("20241109220243_UsandoDateOnly")]
+    partial class UsandoDateOnly
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,8 +35,7 @@ namespace CompanhiadoCacau.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("DataNascimento")
                         .HasColumnType("date");
@@ -81,8 +80,11 @@ namespace CompanhiadoCacau.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Complemento")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ComplementoValidado")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Localidade")
                         .IsRequired()
@@ -97,7 +99,8 @@ namespace CompanhiadoCacau.Migrations
 
                     b.Property<string>("UF")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
                     b.HasKey("IdEndereco");
 
@@ -112,24 +115,23 @@ namespace CompanhiadoCacau.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PedidoId"));
 
-                    b.Property<int>("ClienteId")
+                    b.Property<DateOnly>("DataPedido")
+                        .HasColumnType("date");
+
+                    b.Property<int>("IdCliente")
                         .HasColumnType("int");
 
-                    b.Property<int>("EnderecoId")
+                    b.Property<string>("ResponsavelAtendimento")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("ValorTotal")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("PedidoId");
 
-                    b.HasIndex("ClienteId");
-
-                    b.HasIndex("EnderecoId")
-                        .IsUnique();
+                    b.HasIndex("IdCliente");
 
                     b.ToTable("Pedidos");
                 });
@@ -174,15 +176,10 @@ namespace CompanhiadoCacau.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("PedidoId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Valor")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ProdutoId");
-
-                    b.HasIndex("PedidoId");
 
                     b.ToTable("Produtos");
                 });
@@ -202,19 +199,11 @@ namespace CompanhiadoCacau.Migrations
                 {
                     b.HasOne("CompanhiadoCacau.Models.Cliente", "Cliente")
                         .WithMany("PedidosCliente")
-                        .HasForeignKey("ClienteId")
+                        .HasForeignKey("IdCliente")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("CompanhiadoCacau.Models.Endereco", "EnderecoEntrega")
-                        .WithOne()
-                        .HasForeignKey("CompanhiadoCacau.Models.Pedido", "EnderecoId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Cliente");
-
-                    b.Navigation("EnderecoEntrega");
                 });
 
             modelBuilder.Entity("CompanhiadoCacau.Models.PedidoProduto", b =>
@@ -236,13 +225,6 @@ namespace CompanhiadoCacau.Migrations
                     b.Navigation("Produto");
                 });
 
-            modelBuilder.Entity("CompanhiadoCacau.Models.Produto", b =>
-                {
-                    b.HasOne("CompanhiadoCacau.Models.Pedido", null)
-                        .WithMany("Produtos")
-                        .HasForeignKey("PedidoId");
-                });
-
             modelBuilder.Entity("CompanhiadoCacau.Models.Cliente", b =>
                 {
                     b.Navigation("PedidosCliente");
@@ -251,8 +233,6 @@ namespace CompanhiadoCacau.Migrations
             modelBuilder.Entity("CompanhiadoCacau.Models.Pedido", b =>
                 {
                     b.Navigation("PedidoProdutos");
-
-                    b.Navigation("Produtos");
                 });
 
             modelBuilder.Entity("CompanhiadoCacau.Models.Produto", b =>

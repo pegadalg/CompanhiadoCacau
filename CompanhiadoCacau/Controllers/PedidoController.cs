@@ -48,24 +48,51 @@ namespace CompanhiadoCacau.Controllers
         // GET: Pedido/Create
         public IActionResult Create()
         {
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF");
+            // Carregar a lista de produtos disponíveis para o pedido
+            ViewBag.Produtos = new SelectList(_context.Produtos, "ProdutoId", "Nome");
+
+            // Carregar a lista de clientes
+            ViewBag.IdCliente = new SelectList(_context.Clientes, "ClienteId", "Nome");
+
             return View();
         }
-
         // POST: Pedido/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PedidoId,IdCliente,Status,DataPedido,ResponsavelAtendimento")] Pedido pedido)
+        public async Task<IActionResult> Create(Pedido pedido, int[] Produtos, int[] Quantidades)
         {
             if (ModelState.IsValid)
             {
+                // Criar o pedido
+                pedido.Status = StatusPedido.Pendente; // Status padrão
+                pedido.DataPedido = DateOnly.FromDateTime(DateTime.Now); // Data do pedido
                 _context.Add(pedido);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); // Salva o pedido para obter o PedidoId
+
+                // Associar os produtos ao pedido
+                if (Produtos != null && Quantidades != null && Produtos.Length == Quantidades.Length)
+                {
+                    for (int i = 0; i < Produtos.Length; i++)
+                    {
+                        var pedidoProduto = new PedidoProduto
+                        {
+                            PedidoId = pedido.PedidoId,
+                            ProdutoId = Produtos[i],
+                            Quantidade = Quantidades[i]
+                        };
+
+                        _context.Add(pedidoProduto);
+                    }
+
+                    await _context.SaveChangesAsync(); // Salva os registros de PedidoProduto
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF", pedido.IdCliente);
+
+            // Recarrega os dados caso ocorra erro de validação
+            ViewBag.Produtos = new SelectList(_context.Produtos, "ProdutoId", "Nome");
+            ViewBag.IdCliente = new SelectList(_context.Clientes, "ClienteId", "Nome");
             return View(pedido);
         }
 
@@ -82,7 +109,19 @@ namespace CompanhiadoCacau.Controllers
             {
                 return NotFound();
             }
+
+            // Passando a lista de clientes para o ViewData
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF", pedido.IdCliente);
+
+            // Passando os valores do enum StatusPedido para o ViewBag
+            ViewBag.Status = Enum.GetValues(typeof(StatusPedido))
+                                 .Cast<StatusPedido>()
+                                 .Select(e => new SelectListItem
+                                 {
+                                     Text = e.ToString(),  // Nome do status
+                                     Value = ((int)e).ToString()  // Valor numérico associado ao enum
+                                 }).ToList();
+
             return View(pedido);
         }
 
@@ -118,7 +157,19 @@ namespace CompanhiadoCacau.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            // Recarregar os dados caso ocorra algum erro
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "ClienteId", "CPF", pedido.IdCliente);
+
+            // Recarregar a lista de Status para o dropdown
+            ViewData["Status"] = Enum.GetValues(typeof(StatusPedido))
+                                     .Cast<StatusPedido>()
+                                     .Select(e => new SelectListItem
+                                     {
+                                         Text = e.ToString(),
+                                         Value = ((int)e).ToString()
+                                     }).ToList();
+
             return View(pedido);
         }
 

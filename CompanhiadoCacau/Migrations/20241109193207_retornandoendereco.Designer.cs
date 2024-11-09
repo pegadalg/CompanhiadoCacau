@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CompanhiadoCacau.Migrations
 {
     [DbContext(typeof(CiadoCacauContext))]
-    [Migration("20241108235019_RetirandoValorTotal")]
-    partial class RetirandoValorTotal
+    [Migration("20241109193207_retornandoendereco")]
+    partial class retornandoendereco
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,8 +35,7 @@ namespace CompanhiadoCacau.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("DataNascimento")
                         .HasColumnType("date");
@@ -83,6 +82,10 @@ namespace CompanhiadoCacau.Migrations
                     b.Property<string>("Complemento")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ComplementoValidado")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("Localidade")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -120,10 +123,11 @@ namespace CompanhiadoCacau.Migrations
 
                     b.Property<string>("ResponsavelAtendimento")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("PedidoId");
 

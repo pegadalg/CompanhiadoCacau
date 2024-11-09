@@ -29,7 +29,7 @@ namespace CompanhiadoCacau.Models
         public string Telefone { get; set; }
 
        
-        public Endereco Endereco { get; set; }
+        public Endereco? Endereco { get; set; }
 
         [ForeignKey("Endereco")]
         public int EnderecoId { get; set; }       

@@ -112,8 +112,8 @@ namespace CompanhiadoCacau.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PedidoId"));
 
-                    b.Property<DateTime>("DataPedido")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DataPedido")
+                        .HasColumnType("date");
 
                     b.Property<int>("IdCliente")
                         .HasColumnType("int");

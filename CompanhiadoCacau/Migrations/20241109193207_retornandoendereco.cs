@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CompanhiadoCacau.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialModels : Migration
+    public partial class retornandoendereco : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,15 +19,31 @@ namespace CompanhiadoCacau.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CEP = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Logradouro = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Complemento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Complemento = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ComplementoValidado = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Bairro = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Localidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UF = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UF = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
                     Numero = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Enderecos", x => x.IdEndereco);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Produtos",
+                columns: table => new
+                {
+                    ProdutoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Valor = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Estoque = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Produtos", x => x.ProdutoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -38,7 +54,7 @@ namespace CompanhiadoCacau.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DataNascimento = table.Column<DateOnly>(type: "date", nullable: false),
-                    CPF = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    CPF = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EnderecoId = table.Column<int>(type: "int", nullable: false)
@@ -60,46 +76,20 @@ namespace CompanhiadoCacau.Migrations
                 {
                     PedidoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ClienteId = table.Column<int>(type: "int", nullable: false),
-                    ValorTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
-                    EnderecoId = table.Column<int>(type: "int", nullable: false)
+                    IdCliente = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    DataPedido = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ResponsavelAtendimento = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pedidos", x => x.PedidoId);
                     table.ForeignKey(
-                        name: "FK_Pedidos_Clientes_ClienteId",
-                        column: x => x.ClienteId,
+                        name: "FK_Pedidos_Clientes_IdCliente",
+                        column: x => x.IdCliente,
                         principalTable: "Clientes",
                         principalColumn: "ClienteId",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Pedidos_Enderecos_EnderecoId",
-                        column: x => x.EnderecoId,
-                        principalTable: "Enderecos",
-                        principalColumn: "IdEndereco");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Produtos",
-                columns: table => new
-                {
-                    ProdutoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Valor = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Estoque = table.Column<int>(type: "int", nullable: false),
-                    PedidoId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Produtos", x => x.ProdutoId);
-                    table.ForeignKey(
-                        name: "FK_Produtos_Pedidos_PedidoId",
-                        column: x => x.PedidoId,
-                        principalTable: "Pedidos",
-                        principalColumn: "PedidoId");
                 });
 
             migrationBuilder.CreateTable(
@@ -140,20 +130,9 @@ namespace CompanhiadoCacau.Migrations
                 column: "ProdutoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pedidos_ClienteId",
+                name: "IX_Pedidos_IdCliente",
                 table: "Pedidos",
-                column: "ClienteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pedidos_EnderecoId",
-                table: "Pedidos",
-                column: "EnderecoId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Produtos_PedidoId",
-                table: "Produtos",
-                column: "PedidoId");
+                column: "IdCliente");
         }
 
         /// <inheritdoc />
@@ -163,10 +142,10 @@ namespace CompanhiadoCacau.Migrations
                 name: "PedidoProdutos");
 
             migrationBuilder.DropTable(
-                name: "Produtos");
+                name: "Pedidos");
 
             migrationBuilder.DropTable(
-                name: "Pedidos");
+                name: "Produtos");
 
             migrationBuilder.DropTable(
                 name: "Clientes");
