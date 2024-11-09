@@ -7,7 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Adiciona o serviço HttpClient para permitir chamadas HTTP
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("ViaCepClient", client =>
+{
+    client.BaseAddress = new Uri("https://viacep.com.br/"); // Definindo a URL base para as chamadas HTTP
+    client.Timeout = TimeSpan.FromSeconds(30); // Ajustando o tempo de timeout (opcional)
+});
 
 // Configura a conexão com o banco de dados
 var connectionString = builder.Configuration.GetConnectionString("CompanhiadoCacauConnection");

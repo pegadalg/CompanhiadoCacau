@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CompanhiadoCacau.Models;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace CompanhiadoCacau.Models
 {
@@ -15,13 +16,23 @@ namespace CompanhiadoCacau.Models
         public Cliente? Cliente { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal ValorTotal { get; set; }
+        public StatusPedido Status { get; set; }  // Enum aqui
+
+        public DateTime DataPedido { get; set; } = DateTime.UtcNow;
 
         [Required]
-        public bool Status { get; set; }
+        [MaxLength(100)]
+        public string ResponsavelAtendimento { get; set; }
 
-        // Relacionamento com produtos por meio da tabela intermediária PedidoProduto
         public List<PedidoProduto> PedidoProdutos { get; set; } = new List<PedidoProduto>();
     }
+
+    public enum StatusPedido
+    {
+        Pendente = 0,
+        EmAndamento = 1,
+        Finalizado = 2,
+        Cancelado = 3
+    }
+
 }

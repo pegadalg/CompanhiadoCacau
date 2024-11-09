@@ -57,7 +57,7 @@ namespace CompanhiadoCacau.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PedidoId,IdCliente,ValorTotal,Status")] Pedido pedido)
+        public async Task<IActionResult> Create([Bind("PedidoId,IdCliente,Status,DataPedido,ResponsavelAtendimento")] Pedido pedido)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace CompanhiadoCacau.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PedidoId,IdCliente,ValorTotal,Status")] Pedido pedido)
+        public async Task<IActionResult> Edit(int id, [Bind("PedidoId,IdCliente,Status,DataPedido,ResponsavelAtendimento")] Pedido pedido)
         {
             if (id != pedido.PedidoId)
             {

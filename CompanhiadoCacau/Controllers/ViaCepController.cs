@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using CompanhiadoCacau.Models;
+using System.Text.RegularExpressions;
 
 namespace CompanhiadoCacau.Controllers
 {
@@ -21,17 +22,36 @@ namespace CompanhiadoCacau.Controllers
         [HttpGet("cep/{cep}")]
         public async Task<IActionResult> GetEnderecoPorCep(string cep)
         {
-            var response = await _httpClient.GetAsync($"https://viacep.com.br/ws/{cep}/json/");
-
-            if (response.IsSuccessStatusCode)
+            // Valida o formato do CEP
+            if (!Regex.IsMatch(cep, @"^\d{5}-\d{3}$"))
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var endereco = JsonConvert.DeserializeObject<Endereco>(json);
-
-                return Ok(endereco);
+                return BadRequest("O formato do CEP deve ser 12345-678.");
             }
 
-            return NotFound(); // Retorna 404 se o endereço não for encontrado
+            try
+            {
+                var response = await _httpClient.GetAsync($"https://viacep.com.br/ws/{cep}/json/");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var endereco = JsonConvert.DeserializeObject<Endereco>(json);
+
+                    if (endereco == null || string.IsNullOrEmpty(endereco.CEP))
+                    {
+                        return NotFound(); // Retorna 404 se o endereço não for encontrado
+                    }
+
+                    return Ok(endereco);
+                }
+
+                return NotFound(); // Retorna 404 em caso de erro na API
+            }
+            catch (Exception ex)
+            {
+                // Retorna um erro genérico caso ocorra algum problema de conexão
+                return StatusCode(500, $"Erro ao acessar a API do ViaCep: {ex.Message}");
+            }
         }
     }
 }

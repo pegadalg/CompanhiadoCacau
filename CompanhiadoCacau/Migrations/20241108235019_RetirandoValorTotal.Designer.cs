@@ -4,6 +4,7 @@ using CompanhiadoCacau.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CompanhiadoCacau.Migrations
 {
     [DbContext(typeof(CiadoCacauContext))]
-    partial class CiadoCacauContextModelSnapshot : ModelSnapshot
+    [Migration("20241108235019_RetirandoValorTotal")]
+    partial class RetirandoValorTotal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,7 +35,8 @@ namespace CompanhiadoCacau.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<DateOnly>("DataNascimento")
                         .HasColumnType("date");
@@ -79,10 +83,6 @@ namespace CompanhiadoCacau.Migrations
                     b.Property<string>("Complemento")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ComplementoValidado")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("Localidade")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -120,11 +120,10 @@ namespace CompanhiadoCacau.Migrations
 
                     b.Property<string>("ResponsavelAtendimento")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
                     b.HasKey("PedidoId");
 
