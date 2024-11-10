@@ -11,6 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <!-- Formulário de busca de endereço pelo CEP -->
         <form asp-action="Create" method="get">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -24,11 +25,6 @@
                 <label asp-for="Logradouro" class="control-label"></label>
                 <input asp-for="Logradouro" class="form-control" readonly />
                 <span asp-validation-for="Logradouro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Complemento" class="control-label"></label>
-                <input asp-for="Complemento" class="form-control" />
-                <span asp-validation-for="Complemento" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Bairro" class="control-label"></label>
@@ -45,11 +41,9 @@
                 <input asp-for="UF" class="form-control" readonly />
                 <span asp-validation-for="UF" class="text-danger"></span>
             </div>
-            
-
         </form>
 
-        <!-- Formulário para criar o endereço -->
+        <!-- Formulário de criação do endereço -->
         <form asp-action="Create" method="post">
             <input type="hidden" asp-for="IdEndereco" />
             <input type="hidden" asp-for="CEP" />
@@ -57,9 +51,21 @@
             <input type="hidden" asp-for="Bairro" />
             <input type="hidden" asp-for="Localidade" />
             <input type="hidden" asp-for="UF" />
-            <label asp-for="Numero" class="control-label"></label>
-            <input asp-for="Numero" class="form-control" />
-            <span asp-validation-for="Numero" class="text-danger"></span>
+
+            <!-- Campo para número da casa -->
+            <div class="form-group">
+                <label asp-for="Numero" class="control-label"></label>
+                <input asp-for="Numero" class="form-control" />
+                <span asp-validation-for="Numero" class="text-danger"></span>
+            </div>
+
+            <!-- Campo para complemento -->
+            <div class="form-group">
+                <label asp-for="Complemento" class="control-label"></label>
+                <input asp-for="Complemento" class="form-control" />
+                <span asp-validation-for="Complemento" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

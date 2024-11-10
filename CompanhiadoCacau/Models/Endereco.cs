@@ -18,14 +18,9 @@ namespace CompanhiadoCacau.Models
         [Required(ErrorMessage = "O logradouro é obrigatório.")]
         public string Logradouro { get; set; }
 
-        public string? Complemento { get; set; }
 
         [MaxLength(100, ErrorMessage = "O complemento não pode ter mais de 100 caracteres.")]
-        public string? ComplementoValidado
-        {
-            get { return Complemento; }
-            set { Complemento = value?.Length > 100 ? value.Substring(0, 100) : value; }
-        }
+        public string? Complemento { get; set; }
 
         [Required(ErrorMessage = "O bairro é obrigatório.")]
         public string Bairro { get; set; }
@@ -38,6 +33,7 @@ namespace CompanhiadoCacau.Models
         public string UF { get; set; }
 
         [Required(ErrorMessage = "O número é obrigatório.")]
+        [Range(1, int.MaxValue, ErrorMessage = "O número da casa deve ser maior ou igual a 1.")]
         public int Numero { get; set; }
     }
 }

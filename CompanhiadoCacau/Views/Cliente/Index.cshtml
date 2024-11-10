@@ -1,4 +1,6 @@
-﻿@model IEnumerable<CompanhiadoCacau.Models.Cliente>
+﻿@using CompanhiadoCacau.Extensions
+
+@model IEnumerable<CompanhiadoCacau.Models.Cliente>
 
 @{
     ViewData["Title"] = "Index";
@@ -35,32 +37,49 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataNascimento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CPF)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telefone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Endereco.Bairro)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ClienteId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ClienteId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ClienteId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataNascimento)
+                </td>
+                <td>
+                    <!-- Exibindo o CPF com formatação -->
+                    @if (!string.IsNullOrWhiteSpace(item.CPF))
+                    {
+                        @item.CPF.FormatarCpf() <!-- Chamando o método de extensão para formatar o CPF -->
+                    }
+                    else
+                    {
+                        @:CPF inválido <!-- Exibindo "CPF inválido" caso o CPF seja nulo ou vazio -->
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <!-- Exibindo o telefone com formatação -->
+                    @if (!string.IsNullOrWhiteSpace(item.Telefone))
+                    {
+                        @item.Telefone.FormatarTelefone() <!-- Chamando o método de extensão para formatar o telefone -->
+                    }
+                    else
+                    {
+                        @:Telefone inválido <!-- Exibindo "Telefone inválido" caso o telefone seja nulo ou vazio -->
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Endereco.Bairro)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ClienteId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ClienteId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ClienteId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

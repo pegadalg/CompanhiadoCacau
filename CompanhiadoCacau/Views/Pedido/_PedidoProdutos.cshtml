@@ -1,0 +1,27 @@
+﻿@model List<CompanhiadoCacau.Models.PedidoProduto>
+
+<h1>Criar Pedido</h1>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Capacity">Cliente</label>
+        <select asp-for="Capacity" class="form-control" asp-items="ViewBag.Clientes"></select>
+    </div>
+
+    <div class="form-group">
+        <label>Produtos</label>
+        <select id="Produtos" name="produtoIds" class="form-control" multiple="multiple">
+            @foreach (var produto in ViewBag.Produtos as SelectListItem[])
+            {
+                <option value="@produto.Value">@produto.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Quantidades</label>
+        <input type="text" name="quantidades" class="form-control" placeholder="Exemplo: 1,2,3" />
+        <small class="text-muted">Digite as quantidades separadas por vírgula</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Criar Pedido</button>
+</form>

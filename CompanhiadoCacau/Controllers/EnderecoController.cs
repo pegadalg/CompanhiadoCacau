@@ -45,7 +45,6 @@ namespace CompanhiadoCacau.Controllers
             {
                 CEP = enderecoApi.CEP,
                 Logradouro = enderecoApi.Logradouro,
-                Complemento = enderecoApi.Complemento,
                 Bairro = enderecoApi.Bairro,
                 Localidade = enderecoApi.Localidade,
                 UF = enderecoApi.UF
@@ -60,7 +59,6 @@ namespace CompanhiadoCacau.Controllers
         {
             public string CEP { get; set; }
             public string Logradouro { get; set; }
-            public string Complemento { get; set; }
             public string Bairro { get; set; }
             public string Localidade { get; set; }
             public string UF { get; set; }
@@ -104,7 +102,6 @@ namespace CompanhiadoCacau.Controllers
                 {
                     endereco.CEP = enderecoApi.CEP;
                     endereco.Logradouro = enderecoApi.Logradouro;
-                    endereco.Complemento = enderecoApi.Complemento;
                     endereco.Bairro = enderecoApi.Bairro;
                     endereco.Localidade = enderecoApi.Localidade;
                     endereco.UF = enderecoApi.UF;
@@ -114,25 +111,55 @@ namespace CompanhiadoCacau.Controllers
             return View(endereco);
         }
 
+        // POST: Endereco/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdEndereco,CEP,Logradouro,Complemento,Bairro,Localidade,UF,Numero")] Endereco endereco)
         {
+            // Verifica se o campo Complemento está vazio e, em caso afirmativo, define como null
+            if (string.IsNullOrEmpty(endereco.Complemento))
+            {
+                endereco.Complemento = null;
+            }
+
             // Exibe erros do ModelState para debugar se o ModelState não estiver válido
             if (!ModelState.IsValid)
             {
+                // Imprime os erros do ModelState no console para depuração
                 foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                 {
                     Console.WriteLine(error.ErrorMessage); // Exibe o erro no console
                 }
+
+                // Retorna a view com os erros, preservando os dados preenchidos no formulário
                 return View(endereco);
             }
 
-           
-            _context.Add(endereco);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                // Adiciona o novo endereço ao contexto
+                _context.Add(endereco);
+
+                // Salva as mudanças no banco de dados de forma assíncrona
+                await _context.SaveChangesAsync();
+
+                // Redireciona para a página de índice (ou para a listagem de endereços, por exemplo)
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                // Se ocorrer algum erro, registra e exibe o erro no console para depurar
+                Console.WriteLine("Erro ao salvar o endereço: " + ex.Message);
+
+                // Adiciona um erro genérico de falha de salvamento
+                ModelState.AddModelError(string.Empty, "Ocorreu um erro ao salvar os dados. Tente novamente.");
+
+                // Retorna a view com os dados preenchidos e o erro
+                return View(endereco);
+            }
         }
+
+
 
 
         // GET: Endereco/Edit/5

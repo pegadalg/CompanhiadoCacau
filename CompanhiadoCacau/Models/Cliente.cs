@@ -15,6 +15,7 @@ namespace CompanhiadoCacau.Models
         public string Nome { get; set; }
 
         [Required]
+        [DataNascimentoNaoPodeSerFutura(ErrorMessage = "A data de nascimento não pode ser maior que a data atual.")]
         public DateOnly DataNascimento { get; set; }
 
         [Required]
@@ -22,10 +23,10 @@ namespace CompanhiadoCacau.Models
         public string CPF { get; set; }
 
         [Required]
-        [EmailAddress]
+        [Email(ErrorMessage = "O e-mail fornecido não é válido.")]
         public string Email { get; set; }
 
-        [Phone]
+        [Telefone(ErrorMessage = "O número de telefone fornecido não é válido.")]
         public string Telefone { get; set; }
 
        

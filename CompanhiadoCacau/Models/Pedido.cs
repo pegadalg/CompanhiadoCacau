@@ -24,6 +24,7 @@ namespace CompanhiadoCacau.Models
 
         [Required]
         [MaxLength(100)]
+        [MinLength(3)]
         [DisplayName("Responsável Atendimento")]
         public string ResponsavelAtendimento { get; set; }
 

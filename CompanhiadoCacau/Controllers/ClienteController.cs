@@ -61,13 +61,29 @@ namespace CompanhiadoCacau.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Verifica se já existe algum cliente com o mesmo CPF
+                bool cpfExistente = await _context.Clientes
+                    .AnyAsync(c => c.CPF == cliente.CPF);
+
+                if (cpfExistente)
+                {
+                    ModelState.AddModelError("CPF", "CPF já cadastrado");
+                    // Recarrega a lista de Endereços para o formulário
+                    ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro", cliente.EnderecoId);
+                    return View(cliente);
+                }
+
+                // Se o CPF não existir, salva o novo cliente
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // Se a model não for válida, recarrega os dados
             ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro", cliente.EnderecoId);
             return View(cliente);
         }
+
 
         // GET: Cliente/Edit/5
         public async Task<IActionResult> Edit(int? id)
