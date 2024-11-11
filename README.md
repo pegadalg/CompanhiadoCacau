@@ -45,7 +45,7 @@ Como associar o Banco de Dados:
 - Expanda o servidor local
 - Expanda o Banco de dados
 - Clique com o botão direito do mouse na pasta do seu banco de dados e selecione a opção "Adicionar Novo Banco de Dados"
-- Crie o Banco de dados com o nome: CompanhiadoCacau
+- Crie o Banco de dados com o nome: Cacau
 - Clique com o botão direito do mouse no banco de dados que acabou de criar "CompanhiadoCacau" e selecione a opção "propriedades"
 - Perceba que abrirá um novo menu em sua tela, procure por "Cadeia de Conexão" e copie.
 - Vá até o arquivo "appsettings.json" e substitua o código contido após  "CompanhiadoCacauConnection":
