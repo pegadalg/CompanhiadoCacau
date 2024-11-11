@@ -5,54 +5,176 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="container mt-5">
+    <h3 class="page-title">Cadastrar Cliente</h3>
+    <hr />
+    <form asp-action="Create" class="form-container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<h4>Cliente</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="Nome" class="control-label">Nome</label>
                 <input asp-for="Nome" class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DataNascimento" class="control-label" ></label>
-                <input asp-for="DataNascimento" class="form-control" type="date"/>
+
+            <div class="form-group col-md-6">
+                <label asp-for="DataNascimento" class="control-label">Data de Nascimento</label>
+                <input asp-for="DataNascimento" class="form-control" type="date" />
                 <span asp-validation-for="DataNascimento" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CPF" class="control-label"></label>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="CPF" class="control-label">CPF</label>
                 <input asp-for="CPF" class="form-control" />
                 <span asp-validation-for="CPF" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
+
+            <div class="form-group col-md-6">
+                <label asp-for="Email" class="control-label">Email</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Telefone" class="control-label"></label>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="Telefone" class="control-label">Telefone</label>
                 <input asp-for="Telefone" class="form-control" />
                 <span asp-validation-for="Telefone" class="text-danger"></span>
             </div>
-            <div class="form-group">
+
+            <div class="form-group col-md-6">
                 <label asp-for="EnderecoId" class="control-label"></label>
-                <select asp-for="EnderecoId" class ="form-control" asp-items="ViewBag.EnderecoId"></select>
+                <select asp-for="EnderecoId" class="form-control" asp-items="ViewBag.EnderecoId"></select>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+        </div>
+
+        <!-- Seção de endereço
+        <div class="form-group">
+            <h3>
+                
+                <button type="button" id="toggle-address" class="btn btn-link">
+                    <span id="toggle-icon">▼</span>
+                </button>
+            </h3>
+            <div id="address-fields" style="display: none;">
+               
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <label asp-for="Endereco.CEP" class="control-label">CEP</label>
+                        <input asp-for="Endereco.CEP" class="form-control" id="cep-input" />
+                        <span asp-validation-for="Endereco.CEP" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button type="button" id="buscar-endereco" class="btn btn-secondary w-100 mt-3">Buscar Endereço</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Endereco.Logradouro" class="control-label">Logradouro</label>
+                    <input asp-for="Endereco.Logradouro" class="form-control" readonly />
+                    <span asp-validation-for="Endereco.Logradouro" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Bairro" class="control-label">Bairro</label>
+                    <input asp-for="Endereco.Bairro" class="form-control" readonly />
+                    <span asp-validation-for="Endereco.Bairro" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Localidade" class="control-label">Localidade</label>
+                    <input asp-for="Endereco.Localidade" class="form-control" readonly />
+                    <span asp-validation-for="Endereco.Localidade" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.UF" class="control-label">UF</label>
+                    <input asp-for="Endereco.UF" class="form-control" readonly />
+                    <span asp-validation-for="Endereco.UF" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Numero" class="control-label">Número</label>
+                    <input asp-for="Endereco.Numero" class="form-control" />
+                    <span asp-validation-for="Endereco.Numero" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Complemento" class="control-label">Complemento</label>
+                    <input asp-for="Endereco.Complemento" class="form-control" />
+                    <span asp-validation-for="Endereco.Complemento" class="text-danger"></span>
+                </div>
             </div>
-        </form>
-    </div>
+        </div> -->
+
+        <div class="form-group d-flex justify-content-between mt-3">
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            <input type="submit" value="Criar" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script>
+    document.getElementById("toggle-address").addEventListener("click", function () {
+        var addressFields = document.getElementById("address-fields");
+        var toggleIcon = document.getElementById("toggle-icon");
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+        if (addressFields.style.display === "none") {
+            addressFields.style.display = "block";
+            toggleIcon.innerHTML = "▲";
+        } else {
+            addressFields.style.display = "none";
+            toggleIcon.innerHTML = "▼";
+        }
+    });
+
+    document.getElementById("buscar-endereco").addEventListener("click", function () {
+        const cep = document.getElementById("cep-input").value.replace(/\D/g, '');
+
+        if (cep.length === 8) {
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        alert("CEP não encontrado.");
+                        return;
+                    }
+                    document.getElementById("Endereco_Logradouro").value = data.logradouro;
+                    document.getElementById("Endereco_Bairro").value = data.bairro;
+                    document.getElementById("Endereco_Localidade").value = data.localidade;
+                    document.getElementById("Endereco_UF").value = data.uf;
+                })
+                .catch(error => {
+                    console.error("Erro ao buscar o CEP:", error);
+                    alert("Erro ao buscar o CEP.");
+                });
+        } else {
+            alert("Por favor, insira um CEP válido com 8 dígitos.");
+        }
+    });
+</script>
+
+<style>
+    .form-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+ 
+  
+    #toggle-address {
+        background: none;
+        border: none;
+        color: #007bff;
+        cursor: pointer;
+    }
+
+        #toggle-address:hover {
+            text-decoration: underline;
+        }
+</style>

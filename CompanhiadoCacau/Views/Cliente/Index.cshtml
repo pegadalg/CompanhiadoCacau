@@ -1,85 +1,148 @@
 ﻿@using CompanhiadoCacau.Extensions
-
 @model IEnumerable<CompanhiadoCacau.Models.Cliente>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Clientes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="container mt-5">
+        <h3>Clientes</h3>
+        <hr />
+    <div class="box">
+        <form asp-action="Search" method="get" class="search-container">
+            <input type="text" name="searchString" class="form-control search-input" placeholder="Buscar cliente..." value="@ViewData["CurrentFilter"]" />
+            <a class="btn custom-btn-add" asp-action="Create">
+                <i class="fas fa-plus"></i>
+            </a>
+        </form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataNascimento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CPF)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Telefone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Endereco)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DataNascimento)
-                </td>
-                <td>
-                    <!-- Exibindo o CPF com formatação -->
-                    @if (!string.IsNullOrWhiteSpace(item.CPF))
-                    {
-                        @item.CPF.FormatarCpf() <!-- Chamando o método de extensão para formatar o CPF -->
-                    }
-                    else
-                    {
-                        @:CPF inválido <!-- Exibindo "CPF inválido" caso o CPF seja nulo ou vazio -->
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    <!-- Exibindo o telefone com formatação -->
-                    @if (!string.IsNullOrWhiteSpace(item.Telefone))
-                    {
-                        @item.Telefone.FormatarTelefone() <!-- Chamando o método de extensão para formatar o telefone -->
-                    }
-                    else
-                    {
-                        @:Telefone inválido <!-- Exibindo "Telefone inválido" caso o telefone seja nulo ou vazio -->
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Endereco.Bairro)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ClienteId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ClienteId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ClienteId">Delete</a>
-                </td>
-            </tr>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Nome)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataNascimento)</th>
+                    <th>@Html.DisplayNameFor(model => model.CPF)</th>
+                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                    <th>@Html.DisplayNameFor(model => model.Telefone)</th>
+                    <th>@Html.DisplayNameFor(model => model.Endereco)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DataNascimento)</td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(item.CPF))
+                            {
+                                @item.CPF.FormatarCpf()
+                            }
+                            else
+                            {
+                                @:CPF inválido
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(item.Telefone))
+                            {
+                                @item.Telefone.FormatarTelefone()
+                            }
+                            else
+                            {
+                                @:Telefone inválido
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Endereco.Bairro)</td>
+                        <td class="d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@item.ClienteId" class="btn btn-info btn-rounded mr-2" title="Visualizar">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@item.ClienteId" class="btn btn-warning btn-rounded mr-2" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.ClienteId" class="btn btn-danger btn-rounded" title="Excluir">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    </div>
+</div>
+
+<style>
+
+    .box{
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            font-size: 1.1rem;
         }
-    </tbody>
-</table>
+
+    .search-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        flex: 1;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        padding: 10px 20px;
+        border: 1px solid #ced4da;
+        border-right: none;
+    }
+
+    .custom-btn-search {
+        border-radius: 0;
+        padding: 10px;
+        background-color: #6c757d;
+        color: white;
+        border: 1px solid #ced4da;
+        border-left: none;
+        cursor: pointer;
+    }
+
+    .custom-btn-add {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        padding: 10px;
+        background-color: #365673;
+        color: white;
+        border: 1px solid #ced4da;
+        border-left: none;
+        cursor: pointer;
+    }
+
+        .custom-btn-search i,
+        .custom-btn-add i {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+    .table-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    </style>
+
