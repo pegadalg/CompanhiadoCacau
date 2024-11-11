@@ -16,6 +16,7 @@
             padding: 0;
             height: 100%;
             width: 100%;
+            background-color: #F0F0F0;
         }
 
         body {
@@ -23,7 +24,6 @@
             flex-direction: column;
         }
 
-        /* Sidebar escondida inicialmente */
         .sidebar {
             background-color: white;
             border-right: 1px solid #ddd;
@@ -34,8 +34,8 @@
             left: 0;
             padding-top: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            transition: 0.3s; /* Suaviza a animação */
-            overflow-x: hidden; /* Impede que o conteúdo vaze */
+            transition: 0.3s; 
+            overflow-x: hidden;
         }
 
             .sidebar a {
@@ -58,7 +58,6 @@
                 font-size: 30px;
             }
 
-            /* Ao abrir, a sidebar terá 250px de largura */
             .sidebar.open {
                 width: 270px;
             }
@@ -78,7 +77,6 @@
             margin-top: auto;
         }
 
-        /* Botão de abrir a sidebar */
         .sidebar-toggle {
             position: absolute;
             top: 20px;
@@ -88,7 +86,6 @@
             cursor: pointer;
         }
 
-        /* Botão de fechar dentro da sidebar */
         .sidebar-close {
             position: absolute;
            
@@ -113,6 +110,7 @@
         <a asp-area="" asp-controller="Cliente" asp-action="Index">Cliente</a>
         <a asp-area="" asp-controller="Pedido" asp-action="Index">Pedido</a>
         <a asp-area="" asp-controller="Produto" asp-action="Index">Produtos</a>
+            <a asp-area="" asp-controller="Endereco" asp-action="Index">Endereços</a>
         </div>
     </div>
 

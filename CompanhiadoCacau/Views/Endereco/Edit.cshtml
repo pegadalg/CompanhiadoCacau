@@ -1,65 +1,129 @@
 ﻿@model CompanhiadoCacau.Models.Endereco
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Endereço";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="container mt-5">
+    <h3 class="page-title">Editar Endereço</h3>
+    <hr />
+    <form asp-action="Edit" class="form-container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="IdEndereco" />
 
-<h4>Endereco</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdEndereco" />
-            <div class="form-group">
-                <label asp-for="CEP" class="control-label"></label>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="CEP" class="control-label">CEP</label>
                 <input asp-for="CEP" class="form-control" />
                 <span asp-validation-for="CEP" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Logradouro" class="control-label"></label>
+
+            <div class="form-group col-md-6">
+                <label asp-for="Logradouro" class="control-label">Logradouro</label>
                 <input asp-for="Logradouro" class="form-control" />
                 <span asp-validation-for="Logradouro" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Complemento" class="control-label"></label>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="Complemento" class="control-label">Complemento</label>
                 <input asp-for="Complemento" class="form-control" />
                 <span asp-validation-for="Complemento" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Bairro" class="control-label"></label>
+
+            <div class="form-group col-md-6">
+                <label asp-for="Bairro" class="control-label">Bairro</label>
                 <input asp-for="Bairro" class="form-control" />
                 <span asp-validation-for="Bairro" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Localidade" class="control-label"></label>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="Localidade" class="control-label">Localidade</label>
                 <input asp-for="Localidade" class="form-control" />
                 <span asp-validation-for="Localidade" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="UF" class="control-label"></label>
+                 
+            <div class="form-group col-md-6">
+                <label asp-for="UF" class="control-label">UF</label>
                 <input asp-for="UF" class="form-control" />
                 <span asp-validation-for="UF" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Numero" class="control-label"></label>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="Numero" class="control-label">Número</label>
                 <input asp-for="Numero" class="form-control" />
                 <span asp-validation-for="Numero" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="form-group d-flex justify-content-between mt-3">
+            <a asp-action="Index" class="btn btn-secondary w-25">Voltar</a>
+            <input type="submit" value="Salvar" class="btn btn-primary w-25" />
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<style>
+    .form-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 0.375rem;
+    }
+
+    .btn-primary {
+        background-color: #365673;
+        border-color: #365673;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        padding: 10px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .form-group.col-md-6 {
+        flex: 1 0 48%;
+    }
+
+    .text-danger {
+        font-size: 0.9rem;
+    }
+</style>

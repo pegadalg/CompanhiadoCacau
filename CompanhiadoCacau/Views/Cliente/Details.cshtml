@@ -8,78 +8,79 @@
 <div class="container mt-5">
     <h3 class="page-title">Detalhes do Cliente</h3>
     <hr />
-    <div class="row">
-        <div class="form-group col-md-6 mt-3">
-            <label class="control-label">Nome</label>
-            <input type="text" class="form-control" value="@Model.Nome" readonly />
+    <div class="form-container">
+        <div class="row">
+            <div class="form-group col-md-6 mt-3">
+                <label class="control-label">Nome</label>
+                <input type="text" class="form-control" value="@Model.Nome" readonly />
+            </div>
+
+            <div class="form-group col-md-6 mt-3">
+                <label class="control-label">Data de Nascimento</label>
+                <input type="text" class="form-control" value="@Model.DataNascimento.ToString("yyyy-MM-dd")" readonly />
+            </div>
         </div>
 
-        <div class="form-group col-md-6 mt-3">
-            <label class="control-label">Data de Nascimento</label>
-            <input type="text" class="form-control" value="@Model.DataNascimento.ToString("yyyy-MM-dd")" readonly />
-        </div>
-    </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label class="control-label">CPF</label>
+                <input type="text" class="form-control" value="@Model.CPF" readonly />
+            </div>
 
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="control-label">CPF</label>
-            <input type="text" class="form-control" value="@Model.CPF" readonly />
+            <div class="form-group col-md-6">
+                <label class="control-label">Email</label>
+                <input type="text" class="form-control" value="@Model.Email" readonly />
+            </div>
         </div>
 
-        <div class="form-group col-md-6">
-            <label class="control-label">Email</label>
-            <input type="text" class="form-control" value="@Model.Email" readonly />
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label class="control-label">Telefone</label>
+                <input type="text" class="form-control" value="@Model.Telefone" readonly />
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label class="control-label">Telefone</label>
-            <input type="text" class="form-control" value="@Model.Telefone" readonly />
-        </div>
-    </div>
-
-    @if (Model.Endereco != null)
-    {
-        <div>
-            <hr />
-            <h4>Endereço</h4>
-            <div class="row">
-                <div class="form-group col-md-6 mt-3">
-                    <label class="control-label">Rua</label>
+        @if (Model.Endereco != null)
+        {
+            <div>
+                <hr />
+                <div class="row">
+                    <div class="form-group col-md-6 mt-3">
+                        <label class="control-label">Rua</label>
                     <input type="text" class="form-control" value="@Model.Endereco.Bairro" readonly />
+                    </div>
+
+                    <div class="form-group col-md-6 mt-3">
+                        <label class="control-label">Número</label>
+                        <input type="text" class="form-control" value="@Model.Endereco.Numero" readonly />
+                    </div>
                 </div>
 
-                <div class="form-group col-md-6 mt-3">
-                    <label class="control-label">Número</label>
-                    <input type="text" class="form-control" value="@Model.Endereco.Numero" readonly />
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group col-md-6">
-                    <label class="control-label">Bairro</label>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Bairro</label>
                     <input type="text" class="form-control" value="@Model.Endereco.Logradouro" readonly />
-                </div>
+                    </div>
 
-                <div class="form-group col-md-6">
-                    <label class="control-label">Cidade</label>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Cidade</label>
                     <input type="text" class="form-control" value="@Model.Endereco.Complemento" readonly />
+                    </div>
                 </div>
-            </div>
 
-            <div class="row">
-                 <div class="form-group col-md-6">
-                    <label class="control-label">CEP</label>
-                    <input type="text" class="form-control" value="@Model.Endereco.CEP" readonly />
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">CEP</label>
+                        <input type="text" class="form-control" value="@Model.Endereco.CEP" readonly />
+                    </div>
                 </div>
             </div>
+        }
+
+        <div class="form-group d-flex justify-content-between mt-3">
+            <a asp-action="Index" class="btn btn-secondary w-25">Voltar</a>
+            <a asp-action="Edit" asp-route-id="@Model?.ClienteId" class="btn btn-primary w-25">Editar</a>
         </div>
-    }
-
-    <div class="form-group d-flex justify-content-between mt-3">
-        <a asp-action="Index" class="btn btn-secondary w-25">Voltar</a>
-        <a asp-action="Edit" asp-route-id="@Model?.ClienteId" class="btn btn-primary w-25">Editar</a>
     </div>
 </div>
 
@@ -92,6 +93,13 @@
 <style>
     .container {
         margin-top: 50px;
+    }
+
+    .form-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
     }
 
     .page-title {

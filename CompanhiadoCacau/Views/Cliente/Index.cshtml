@@ -7,15 +7,15 @@
 }
 
 <div class="container mt-5">
+    <div class="d-flex text-center">
         <h3>Clientes</h3>
-        <hr />
+        <a class="btn custom-btn-add ms-3" asp-action="Create">
+            <i class="fas fa-plus"></i>
+        </a>
+    </div>
+    <hr />
     <div class="box">
-        <form asp-action="Search" method="get" class="search-container">
-            <input type="text" name="searchString" class="form-control search-input" placeholder="Buscar cliente..." value="@ViewData["CurrentFilter"]" />
-            <a class="btn custom-btn-add" asp-action="Create">
-                <i class="fas fa-plus"></i>
-            </a>
-        </form>
+       
 
     <div class="table-responsive">
         <table class="table table-striped table-hover">
@@ -109,33 +109,14 @@
         border-right: none;
     }
 
-    .custom-btn-search {
-        border-radius: 0;
-        padding: 10px;
-        background-color: #6c757d;
-        color: white;
-        border: 1px solid #ced4da;
-        border-left: none;
-        cursor: pointer;
-    }
-
     .custom-btn-add {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-        padding: 10px;
-        background-color: #365673;
-        color: white;
-        border: 1px solid #ced4da;
+        color: black;
         border-left: none;
         cursor: pointer;
     }
 
-        .custom-btn-search i,
         .custom-btn-add i {
             margin: 0;
-            font-size: 1.2rem;
         }
 
     .table-container {

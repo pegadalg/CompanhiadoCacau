@@ -1,37 +1,104 @@
 ﻿@model CompanhiadoCacau.Models.Produto
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Produto";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Produto</h4>
+<div class="container mt-5">
+    <h3 class="page-title">Detalhes do Produto</h3>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Valor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Valor)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Categoria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Categoria)
-        </dd>
-    </dl>
+    <div class="form-container">
+        <div class="row">
+            <div class="form-group col-md-6 mt-3">
+                <label class="control-label">Nome</label>
+                <input type="text" class="form-control" value="@Model.Nome" readonly />
+            </div>
+
+            <div class="form-group col-md-6 mt-3">
+                <label class="control-label">Valor</label>
+                <input type="text" class="form-control" value="@Model.Valor.ToString("C2")" readonly />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label class="control-label">Categoria</label>
+                <input type="text" class="form-control" value="@Model.Categoria" readonly />
+            </div>
+        </div>
+
+        <div class="form-group d-flex justify-content-between mt-3">
+            <a asp-action="Index" class="btn btn-secondary w-25">Voltar</a>
+            <a asp-action="Edit" asp-route-id="@Model?.ProdutoId" class="btn btn-primary w-25">Editar</a>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ProdutoId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    .container {
+        margin-top: 50px;
+    }
+
+    .form-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .page-title {
+        margin-bottom: 30px;
+    }
+
+    .form-control[readonly] {
+        background-color: #f9f9f9;
+        cursor: not-allowed;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 0.375rem;
+    }
+
+    .btn-primary {
+        background-color: #365673;
+        border-color: #365673;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        padding: 10px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .form-group.col-md-6 {
+        flex: 1 0 48%;
+    }
+
+    .text-danger {
+        font-size: 0.9rem;
+    }
+</style>

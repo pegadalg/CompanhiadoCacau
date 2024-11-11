@@ -1,61 +1,55 @@
 ﻿@model CompanhiadoCacau.Models.Pedido
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Pedido";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="container mt-5">
+    <h3 class="page-title">Editar Pedido</h3>
+    <hr />
+    <form asp-action="Edit" class="form-container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PedidoId" />
 
-<h4>Pedido</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <!-- Campo Hidden para PedidoId -->
-            <input type="hidden" asp-for="PedidoId" />
-
-            <!-- Dropdown para selecionar o Cliente -->
-            <div class="form-group">
-                <label asp-for="IdCliente" class="control-label"></label>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="IdCliente" class="control-label">Cliente</label>
                 <select asp-for="IdCliente" class="form-control" asp-items="ViewBag.IdCliente"></select>
                 <span asp-validation-for="IdCliente" class="text-danger"></span>
             </div>
 
-
-            <!-- Dropdown para selecionar o Status -->
-            <div class="form-group">
+            <div class="form-group col-md-6">
                 <label asp-for="Status" class="control-label">Status</label>
                 <select asp-for="Status" class="form-control" asp-items="ViewBag.Status"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
+        </div>
 
-            <!-- Campo DataPedido -->
-            <div class="form-group">
-                <label asp-for="DataPedido" class="control-label"></label>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="DataPedido" class="control-label">Data do Pedido</label>
                 <input asp-for="DataPedido" class="form-control" type="date" />
                 <span asp-validation-for="DataPedido" class="text-danger"></span>
             </div>
 
-            <!-- Campo ResponsavelAtendimento -->
-            <div class="form-group">
-                <label asp-for="ResponsavelAtendimento" class="control-label"></label>
+            <div class="form-group col-md-6">
+                <label asp-for="ResponsavelAtendimento" class="control-label">Responsável pelo Atendimento</label>
                 <input asp-for="ResponsavelAtendimento" class="form-control" />
                 <span asp-validation-for="ResponsavelAtendimento" class="text-danger"></span>
             </div>
+        </div>
 
-            <!-- Botão de Submit -->
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+        <div class="form-group col-md-6">
+            <label class="control-label">Telefone</label>
+            <input type="text" class="form-control" value="@Model.Cliente.Telefone" readonly />
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="form-group d-flex justify-content-between mt-3">
+            <a asp-action="Index" class="btn btn-secondary w-25">Voltar</a>
+            <input type="submit" value="Salvar" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 
 @section Scripts {
@@ -63,3 +57,12 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<style>
+    .form-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+</style>
