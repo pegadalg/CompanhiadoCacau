@@ -48,7 +48,7 @@ namespace CompanhiadoCacau.Controllers
         // GET: Cliente/Create
         public IActionResult Create()
         {
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro");
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "CEP");
             return View();
         }
 
@@ -69,7 +69,7 @@ namespace CompanhiadoCacau.Controllers
                 {
                     ModelState.AddModelError("CPF", "CPF já cadastrado");
                     // Recarrega a lista de Endereços para o formulário
-                    ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro", cliente.EnderecoId);
+                    ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "CEP", cliente.EnderecoId);
                     return View(cliente);
                 }
 
@@ -80,7 +80,7 @@ namespace CompanhiadoCacau.Controllers
             }
 
             // Se a model não for válida, recarrega os dados
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro", cliente.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "CEP", cliente.EnderecoId);
             return View(cliente);
         }
 
@@ -98,7 +98,7 @@ namespace CompanhiadoCacau.Controllers
             {
                 return NotFound();
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro", cliente.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "CEP", cliente.EnderecoId);
             return View(cliente);
         }
 
@@ -134,7 +134,7 @@ namespace CompanhiadoCacau.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "Bairro", cliente.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "IdEndereco", "CEP", cliente.EnderecoId);
             return View(cliente);
         }
 
@@ -162,16 +162,30 @@ namespace CompanhiadoCacau.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente != null)
+            // Carregar o cliente com os pedidos associados
+            var cliente = await _context.Clientes
+                .Include(c => c.PedidosCliente) // Incluir pedidos para verificar se há algum
+                .FirstOrDefaultAsync(c => c.ClienteId == id);
+
+            if (cliente == null)
             {
-                _context.Clientes.Remove(cliente);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            // Verificar se o cliente tem pedidos associados
+            if (cliente.PedidosCliente.Any()) // Se tiver pedidos, não permite a exclusão
+            {
+                // Adiciona uma mensagem de erro que será exibida na View
+                TempData["ErrorMessage"] = "Não é possível excluir o cliente porque ele possui pedidos.";
+                return RedirectToAction(nameof(Index)); // Redireciona para a lista de clientes
+            }
 
+            // Caso contrário, exclui o cliente normalmente
+            _context.Clientes.Remove(cliente);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index)); // Redireciona após a exclusão
+        }
         private bool ClienteExists(int id)
         {
             return _context.Clientes.Any(e => e.ClienteId == id);

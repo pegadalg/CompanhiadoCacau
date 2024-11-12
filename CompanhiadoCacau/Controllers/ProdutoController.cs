@@ -139,15 +139,31 @@ namespace CompanhiadoCacau.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var produto = await _context.Produtos.FindAsync(id);
-            if (produto != null)
+            // Carregar o produto com os pedidos associados
+            var produto = await _context.Produtos
+                .Include(p => p.PedidoProdutos) // Incluir pedidos para verificar se há algum associado
+                .FirstOrDefaultAsync(p => p.ProdutoId == id);
+
+            if (produto == null)
             {
-                _context.Produtos.Remove(produto);
+                return NotFound();
             }
 
+            // Verificar se o produto está associado a algum pedido
+            if (produto.PedidoProdutos.Any()) // Se tiver pedidos, não permite a exclusão
+            {
+                // Adiciona uma mensagem de erro que será exibida na View
+                TempData["ErrorMessage"] = "Não é possível excluir o produto porque ele está associado a um ou mais pedidos.";
+                return RedirectToAction(nameof(Index)); // Redireciona para a lista de produtos
+            }
+
+            // Caso contrário, exclui o produto normalmente
+            _context.Produtos.Remove(produto);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Index)); // Redireciona após a exclusão
         }
+
 
         private bool ProdutoExists(int id)
         {
