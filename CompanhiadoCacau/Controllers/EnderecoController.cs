@@ -236,15 +236,33 @@ namespace CompanhiadoCacau.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // Carrega o endereço pelo id
             var endereco = await _context.Enderecos.FindAsync(id);
-            if (endereco != null)
+
+            if (endereco == null)
             {
-                _context.Enderecos.Remove(endereco);
+                return NotFound();
             }
 
+            // Verificar se o endereço está associado a algum cliente
+            var clienteAssociado = await _context.Clientes
+                .AnyAsync(c => c.EnderecoId == id);
+
+            if (clienteAssociado) // Se existe um cliente com este endereço, bloqueia a exclusão
+            {
+                // Adiciona uma mensagem de erro que será exibida na View
+                TempData["ErrorMessage"] = "Não é possível excluir o endereço porque ele está associado a um cliente.";
+                return RedirectToAction(nameof(Index)); // Redireciona para a lista de endereços
+            }
+
+            // Caso contrário, exclui o endereço normalmente
+            _context.Enderecos.Remove(endereco);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Index)); // Redireciona após a exclusão
         }
+
+
 
         private bool EnderecoExists(int id)
         {
