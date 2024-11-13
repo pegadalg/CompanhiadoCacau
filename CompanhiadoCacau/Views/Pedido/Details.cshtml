@@ -1,51 +1,53 @@
-﻿@model CompanhiadoCacau.Models.Pedido
+﻿@model Pedido
 
 @{
     ViewData["Title"] = "Detalhes do Pedido";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <h3 class="page-title">Detalhes do Pedido</h3>
-    <hr />
-    <div class="form-container">
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="control-label">Cliente</label>
-                <input type="text" class="form-control" value="@Model.Cliente.Nome" readonly />
-            </div>
+<h2>Detalhes do Pedido</h2>
 
-            <div class="form-group col-md-6">
-                <label class="control-label">Status</label>
-                <input type="text" class="form-control" value="@Model.Status" readonly />
-            </div>
-        </div>
+<div>
+    <h3>Pedido: @Model.PedidoId</h3>
+    <p><strong>Responsável Atendimento:</strong> @Model.ResponsavelAtendimento</p>
+    <p><strong>Status:</strong> @Model.Status</p>
+    <p><strong>Data do Pedido:</strong> @Model.DataPedido</p>
 
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="control-label">Data do Pedido</label>
-                <input type="text" class="form-control" value="@Model.DataPedido.ToString("yyyy-MM-dd")" readonly />
-            </div>
+    <h4>Produtos no Pedido</h4>
+    @if (Model.PedidoProdutos != null && Model.PedidoProdutos.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Preço Unitário</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pedidoProduto in Model.PedidoProdutos)
+                {
+                    <tr>
+                        <td>@pedidoProduto.Produto.Nome</td>
+                        <td>@pedidoProduto.Quantidade</td>
+                        <td>@pedidoProduto.Produto.Valor.ToString("C2")</td>
+                        <td>@((pedidoProduto.Quantidade * pedidoProduto.Produto.Valor).ToString("C2"))</td>
 
-            <div class="form-group col-md-6">
-                <label class="control-label">Responsável pelo Atendimento</label>
-                <input type="text" class="form-control" value="@Model.ResponsavelAtendimento" readonly />
-            </div>
-        </div>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label class="control-label">Telefone</label>
-                <input type="text" class="form-control" value="@Model.Cliente.Telefone" readonly />
-            </div>
-        </div>
-
-        <div class="form-group d-flex justify-content-between mt-3">
-            <a asp-action="Index" class="btn btn-secondary w-25">Voltar</a>
-            <a asp-action="Edit" asp-route-id="@Model?.PedidoId" class="btn btn-primary w-25">Editar</a>
-        </div>
-    </div>
+        <p><strong>Total do Pedido:</strong> @Model.PedidoProdutos.Sum(pp => pp.Quantidade * pp.Produto.Valor).ToString("C2")</p>
+    }
+    else
+    {
+        <p>Este pedido não possui produtos associados.</p>
+    }
 </div>
+
+<a href="@Url.Action("Index", "Pedido")" class="btn btn-primary">Voltar para a lista de pedidos</a>
+
 
 <style>
     .form-container {

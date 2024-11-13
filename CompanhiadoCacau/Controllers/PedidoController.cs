@@ -27,22 +27,20 @@ namespace CompanhiadoCacau.Controllers
         }
 
         // GET: Pedido/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            // Buscar o pedido com os produtos associados
+            var pedido = _context.Pedidos
+                .Include(p => p.PedidoProdutos)
+                .ThenInclude(pp => pp.Produto)  // Carregar os produtos associados
+                .FirstOrDefault(p => p.PedidoId == id);
 
-            var pedido = await _context.Pedidos
-                .Include(p => p.Cliente)
-                .FirstOrDefaultAsync(m => m.PedidoId == id);
             if (pedido == null)
             {
-                return NotFound();
+                return NotFound(); // Se o pedido não for encontrado, retorna um erro 404
             }
 
-            return View(pedido);
+            return View(pedido); // Passa o pedido para a view de detalhes
         }
 
         // GET: Pedido/Create
