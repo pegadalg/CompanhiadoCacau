@@ -48,53 +48,62 @@ namespace CompanhiadoCacau.Controllers
         // GET: Pedido/Create
         public IActionResult Create()
         {
-            // Carregar a lista de produtos disponíveis para o pedido
-            ViewBag.Produtos = new SelectList(_context.Produtos, "ProdutoId", "Nome");
+            // Obter todos os produtos e clientes disponíveis
+            var produtos = _context.Produtos.ToList();
+            var clientes = _context.Clientes.ToList();
 
-            // Carregar a lista de clientes
-            ViewBag.IdCliente = new SelectList(_context.Clientes, "ClienteId", "Nome");
+            // Criar um modelo de pedido vazio e passar os produtos e clientes
+            var viewModel = new PedidoViewModel
+            {
+                Produtos = new List<ProdutoPedidoViewModel> { new ProdutoPedidoViewModel() } // Começa com um produto vazio
+            };
 
-            return View();
+            // Passar os produtos e clientes para a view usando ViewBag
+            ViewBag.Produtos = produtos;
+            ViewBag.Clientes = clientes;
+
+            return View(viewModel);
         }
+
         // POST: Pedido/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Pedido pedido, int[] Produtos, int[] Quantidades)
+        public async Task<IActionResult> Create(PedidoViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // Criar o pedido
-                pedido.Status = StatusPedido.Pendente; // Status padrão
-                pedido.DataPedido = DateOnly.FromDateTime(DateTime.Now); // Data do pedido
-                _context.Add(pedido);
-                await _context.SaveChangesAsync(); // Salva o pedido para obter o PedidoId
-
-                // Associar os produtos ao pedido
-                if (Produtos != null && Quantidades != null && Produtos.Length == Quantidades.Length)
+                var pedido = new Pedido
                 {
-                    for (int i = 0; i < Produtos.Length; i++)
+                    IdCliente = viewModel.ClienteId,
+                    ResponsavelAtendimento = viewModel.ResponsavelAtendimento,
+                    Status = StatusPedido.Pendente,
+                    DataPedido = DateOnly.FromDateTime(DateTime.Now)
+                };
+
+                _context.Pedidos.Add(pedido);
+                await _context.SaveChangesAsync();
+
+                foreach (var produto in viewModel.Produtos)
+                {
+                    var pedidoProduto = new PedidoProduto
                     {
-                        var pedidoProduto = new PedidoProduto
-                        {
-                            PedidoId = pedido.PedidoId,
-                            ProdutoId = Produtos[i],
-                            Quantidade = Quantidades[i]
-                        };
+                        PedidoId = pedido.PedidoId,
+                        ProdutoId = produto.ProdutoId,
+                        Quantidade = produto.Quantidade
+                    };
 
-                        _context.Add(pedidoProduto);
-                    }
-
-                    await _context.SaveChangesAsync(); // Salva os registros de PedidoProduto
+                    _context.PedidoProdutos.Add(pedidoProduto);
                 }
 
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            // Recarrega os dados caso ocorra erro de validação
-            ViewBag.Produtos = new SelectList(_context.Produtos, "ProdutoId", "Nome");
-            ViewBag.IdCliente = new SelectList(_context.Clientes, "ClienteId", "Nome");
-            return View(pedido);
+            // Se algo deu errado, repassar a lista de produtos
+            ViewBag.Produtos = _context.Produtos.ToList();
+            return View(viewModel);
         }
+
 
         // GET: Pedido/Edit/5
         public async Task<IActionResult> Edit(int? id)

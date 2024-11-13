@@ -31,8 +31,6 @@ namespace CompanhiadoCacau.Models
 
        
         public Endereco? Endereco { get; set; }
-
-        [ForeignKey("Endereco")]
         public int EnderecoId { get; set; }       
 
         public List<Pedido>? PedidosCliente { get; set; }

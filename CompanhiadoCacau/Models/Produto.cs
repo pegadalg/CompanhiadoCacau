@@ -23,6 +23,6 @@ namespace CompanhiadoCacau.Models
         public string Categoria { get; set; }
 
 
-        public List<PedidoProduto>? PedidoProdutos { get; set; }
+        public List<PedidoProduto>? PedidoProdutos { get; set; } = new List<PedidoProduto>();
     }
 }

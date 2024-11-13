@@ -1,53 +1,90 @@
-﻿@model CompanhiadoCacau.Models.Pedido
+﻿@model PedidoViewModel
 
 @{
-    ViewData["Title"] = "Create Pedido";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Criar Pedido";
 }
 
-<div class="container mt-5">
-    <h3 class="page-title">Cadastrar Pedido</h3>
+<h2>Criar Pedido</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()  <!-- Token CSRF -->
+    <!-- Cliente -->
+    <div class="form-group">
+        <label for="ClienteId">Cliente</label>
+        <select asp-for="ClienteId" class="form-control" asp-items="@(new SelectList(ViewBag.Clientes, "ClienteId", "Nome"))">
+            <option value="">Selecione um cliente</option>
+        </select>
+        <span asp-validation-for="ClienteId" class="text-danger"></span>
+    </div>
+
+    <!-- Responsável pelo atendimento -->
+    <div class="form-group">
+        <label for="ResponsavelAtendimento">Responsável Atendimento</label>
+        <input type="text" asp-for="ResponsavelAtendimento" class="form-control" />
+        <span asp-validation-for="ResponsavelAtendimento" class="text-danger"></span>
+    </div>
+
     <hr />
-    <form asp-action="Create" class="form-container">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label asp-for="IdCliente" class="control-label">Cliente</label>
-                <select asp-for="IdCliente" class="form-control" asp-items="ViewBag.IdCliente"></select>
-                <span asp-validation-for="IdCliente" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="Quantidades">Quantidades</label>
-                <input type="text" name="Quantidades" class="form-control" placeholder="Exemplo: 2,3,4" />
-            </div>
-        </div>
-            <div class="form-group">
-                <label for="Produtos">Produtos</label>
-                <select id="Produtos" name="Produtos" class="form-control" multiple="multiple">
-                    @foreach (var produto in ViewBag.Produtos as IEnumerable<SelectListItem>)
-                    {
-                        <option value="@produto.Value">@produto.Text</option>
-                    }
-                </select>
-            </div>
+    <h4>Adicionar Produtos</h4>
+    <div id="produtos-container">
+        <div id="produto-list">
+            <!-- Iterar pelos produtos na ViewModel -->
+            @for (int i = 0; i < Model.Produtos.Count; i++)
+            {
+                <div class="form-group">
+                    <label >Produto</label>
+                    <select asp-for="Produtos[@i].ProdutoId" class="form-control" asp-items="@(new SelectList(ViewBag.Produtos, "ProdutoId", "Nome"))">
+                        <option value="">Selecione um produto</option>
+                    </select>
+                    <span asp-validation-for="Produtos[@i].ProdutoId" class="text-danger"></span>
+                </div>
 
-        <div class="row">
-            
-
-            <div class="form-group">
-                <label asp-for="ResponsavelAtendimento" class="control-label">Responsável Atendimento</label>
-                <input asp-for="ResponsavelAtendimento" class="form-control" />
-                <span asp-validation-for="ResponsavelAtendimento" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label >Quantidade</label>
+                    <input asp-for="Produtos[@i].Quantidade" class="form-control" />
+                    <span asp-validation-for="Produtos[@i].Quantidade" class="text-danger"></span>
+                </div>
+            }
         </div>
 
-        <div class="form-group d-flex justify-content-between mt-3">
-            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
-            <input type="submit" value="Criar" class="btn btn-primary" />
-        </div>
-    </form>
-</div>
+        <button type="button" class="btn btn-info" id="adicionar-produto">Adicionar Produto</button>
+    </div>
+
+    <hr />
+
+    <button type="submit" class="btn btn-primary">Criar Pedido</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Evento de clique para adicionar um novo produto ao formulário
+            $("#adicionar-produto").click(function () {
+                var index = $("#produto-list .form-group").length / 2; // Determina a quantidade de campos já existentes
+                var produtoHtml = `
+                            <div class="form-group">
+                                <label for="Produtos_${index}__ProdutoId">Produto</label>
+                                <select name="Produtos[${index}].ProdutoId" class="form-control">
+        @foreach (var produto in ViewBag.Produtos)
+        {
+                                            <option value="@produto.ProdutoId">@produto.Nome</option>
+        }
+                                </select>
+                                <span asp-validation-for="Produtos[${index}].ProdutoId" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Produtos_${index}__Quantidade">Quantidade</label>
+                                <input name="Produtos[${index}].Quantidade" class="form-control" type="number" />
+                                <span asp-validation-for="Produtos[${index}].Quantidade" class="text-danger"></span>
+                            </div>
+                        `;
+                $("#produto-list").append(produtoHtml);
+            });
+        });
+    </script>
+}
 
 
 <style>
