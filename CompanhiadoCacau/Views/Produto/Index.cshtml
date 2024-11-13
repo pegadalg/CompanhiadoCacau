@@ -20,7 +20,7 @@
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.Nome)</th>
                         <th>@Html.DisplayNameFor(model => model.Valor)</th>
-                        <th>@Html.DisplayNameFor(model => model.Categoria)</th>
+                        <th>@Html.DisplayNameFor(model => model.Marca)</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -30,7 +30,7 @@
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.Nome)</td>
                             <td>@Html.DisplayFor(modelItem => item.Valor)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Categoria)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Marca)</td>
                             <td class="d-flex justify-content-between">
                                 <a asp-action="Edit" asp-route-id="@item.ProdutoId" class="btn btn-warning btn-rounded mr-2" title="Editar">
                                     <i class="fas fa-edit"></i>
