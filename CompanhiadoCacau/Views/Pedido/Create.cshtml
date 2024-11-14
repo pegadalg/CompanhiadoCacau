@@ -2,10 +2,12 @@
 
 @{
     ViewData["Title"] = "Criar Pedido";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Criar Pedido</h2>
-
+<div class="container mt-5">
+<h2 class="page-title">Cadastrar Pedido</h2>
+<hr/>
 <form asp-action="Create" method="post">
     @Html.AntiForgeryToken()  <!-- Token CSRF -->
     <!-- Cliente -->
@@ -18,7 +20,7 @@
     </div>
 
     <!-- Responsável pelo atendimento -->
-    <div class="form-group">
+    <div class="form-group mt-2">
         <label for="ResponsavelAtendimento">Responsável Atendimento</label>
         <input type="text" asp-for="ResponsavelAtendimento" class="form-control" />
         <span asp-validation-for="ResponsavelAtendimento" class="text-danger"></span>
@@ -48,13 +50,14 @@
             }
         </div>
 
-        <button type="button" class="btn btn-info" id="adicionar-produto">Adicionar Produto</button>
+        <button type="button" class="btn btn-info mt-2" id="adicionar-produto">Adicionar Produto</button>
     </div>
 
     <hr />
 
     <button type="submit" class="btn btn-primary">Criar Pedido</button>
 </form>
+</div>
 
 @section Scripts {
     <script>
@@ -88,7 +91,7 @@
 
 
 <style>
-    .form-container {
+    .container {
         background-color: #fff;
         border-radius: 15px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);

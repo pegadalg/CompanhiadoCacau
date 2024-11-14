@@ -2,11 +2,14 @@
 
 @{
     ViewData["Title"] = "Detalhes do Pedido";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Detalhes do Pedido</h2>
 
-<div>
+<div class="container mt-5">
+	<h2 class="page-title">Detalhes do Pedido</h2>
+    <hr />
+<div class="form-container">
     <h3>Pedido: @Model.PedidoId</h3>
     <p><strong>Responsável Atendimento:</strong> @Model.ResponsavelAtendimento</p>
     <p><strong>Status:</strong> @Model.Status</p>
@@ -44,10 +47,10 @@
     {
         <p>Este pedido não possui produtos associados.</p>
     }
+
+<a href="@Url.Action("Index", "Pedido")" class="btn btn-secondary">Voltar</a>
 </div>
-
-<a href="@Url.Action("Index", "Pedido")" class="btn btn-primary">Voltar para a lista de pedidos</a>
-
+</div>
 
 <style>
     .form-container {
